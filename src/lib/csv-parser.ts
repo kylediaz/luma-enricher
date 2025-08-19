@@ -49,7 +49,7 @@ export function parseCSV(csvContent: string, config: CsvConfig = {}): Promise<Gu
           reject(error);
         }
       },
-      error: (error) => {
+      error: (error: any) => {
         reject(error);
       }
     });
