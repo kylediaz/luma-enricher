@@ -1,27 +1,28 @@
 # Luma Guest Enricher
 
-A powerful tool to enrich event guest data by extracting comprehensive professional information from LinkedIn profiles using the Exa API.
+A NextJS web application for enriching Luma event guest profiles with professional information from LinkedIn, company data, and AI-powered summaries.
 
 ## Features
 
 - 📁 **CSV Upload**: Drag & drop CSV files with guest information
-- 🔍 **LinkedIn Enrichment**: Real-time LinkedIn profile data extraction using Exa API
-- 🤖 **AI Technical Rating**: OpenAI-powered assessment of technical skill levels (1-5 scale)
+- 📱 **Tinder-style UI**: Phone-shaped profile cards for approving/denying guests
+- 📊 **Real-time Table**: Dynamic guest list sorted by approval status
+- 🔍 **Multi-source Enrichment**: LinkedIn profiles via Exa.ai + People Data Labs API
+- 🏢 **Company Intelligence**: Automated company website analysis and summaries
 - 🗄️ **Smart Caching**: ChromaDB vector database prevents duplicate API calls
-- 🔎 **Vector Search**: Find similar profiles using semantic similarity
-- ⚙️ **Flexible Configuration**: Customizable LinkedIn column names
-- 📊 **Rich Results**: Detailed professional profiles with experience, education, and skills
-- 💾 **Export**: Download enriched data as CSV
+- ⚡ **Streaming Updates**: Real-time profile enrichment via Server-Sent Events
+- 🎨 **Clean Design**: Modern UI with rounded corners and no shadows
 
 ## Getting Started
 
 ### Prerequisites
 
 - Node.js 18+ 
-- npm or yarn
+- npm or pnpm
 - Exa API key (sign up at [exa.ai](https://exa.ai))
-- ChromaDB Cloud account (sign up at [trychroma.com](https://trychroma.com))
+- People Data Labs API key (sign up at [peopledatalabs.com](https://peopledatalabs.com))
 - OpenAI API key (sign up at [platform.openai.com](https://platform.openai.com))
+- ChromaDB Cloud account (sign up at [trychroma.com](https://trychroma.com))
 
 ### Installation
 
@@ -38,16 +39,15 @@ npm install
 
 3. Set up environment variables:
 ```bash
-# Create .env.local file
-EXA_API_KEY=your_exa_api_key_here
+# Create .env.development file
+EXASEARCH_API_KEY=your_exa_api_key_here
+PDL_API_KEY=your_people_data_labs_api_key_here
+OPENAI_API_KEY=your_openai_api_key_here
 
-# ChromaDB Configuration (optional - uses hardcoded defaults if not provided)
-CHROMA_API_KEY=your_chroma_api_key
+# ChromaDB Cloud Configuration
+CHROMA_API_KEY=your_chroma_api_key_here
 CHROMA_TENANT=your_chroma_tenant_id
 CHROMA_DATABASE=your_chroma_database_name
-
-# OpenAI Configuration (required for technical rating feature)
-OPENAI_API_KEY=your_openai_api_key_here
 ```
 
 4. Run the development server:
@@ -61,20 +61,29 @@ npm run dev
 
 ### CSV Format
 
-Your CSV should include at minimum:
-- `name` - Guest name
-- `email` - Guest email 
-- `Linkedin` - LinkedIn profile URL (optional)
+Your CSV should include the standard Luma guest export columns:
+- `api_id` - Unique guest identifier
+- `name` - Guest full name
+- `first_name` - Guest first name  
+- `last_name` - Guest last name
+- `email` - Guest email address
+- `approval_status` - Current approval status
+- Plus any custom form fields with LinkedIn profiles
 
-### Advanced Settings
+### LinkedIn Column Configuration
 
-Use the **Advanced Settings** section to customize the LinkedIn column name if your CSV uses a different format (e.g., `linkedin_url`, `LinkedIn Profile`, etc.).
+When uploading a CSV, you can specify which column contains LinkedIn URLs if it's not in the standard format. The app will automatically:
+- Convert usernames to full LinkedIn URLs
+- Filter out invalid values like "N/A", "none", etc.
+- Handle various LinkedIn URL formats
 
-### URL Parameters
+### App Workflow
 
-You can also set the LinkedIn column name via URL parameter:
-- `http://localhost:3000?linkedin_col=linkedin_url`
-- `http://localhost:3000?linkedin_col=LinkedIn`
+1. **Upload CSV**: Drag and drop your Luma guest CSV file
+2. **Configure**: Select the LinkedIn column if available
+3. **Review Profiles**: Use the tinder-style interface to approve/deny guests
+4. **Monitor Progress**: Watch real-time enrichment in the guest table
+5. **Make Decisions**: Approved guests appear at the top, denied at the bottom
 
 ## Caching & Performance
 
